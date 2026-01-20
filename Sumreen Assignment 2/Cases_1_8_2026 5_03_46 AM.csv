@@ -1,0 +1,157 @@
+Id,Title,Estimate,Priority,Type,Jira Refs,Github Refs,Azure Refs,Section,Smoke,Regression,Reviewed by QA Lead,Reviewed by QA Manager,Reviewed by PM,To Automate,Automated,Module,To be Moved,Disabled,Steps (Expected),Steps (Steps),Test Data,Preconditions,Created By,Created On,Updated By,Updated On,Description,Bdd_gherkin,Cucumber_tags,Milestone
+617987,"Verify that on entering valid data in user registration form and clicking the register button, user should be able to register successfully.",20m,P1 - Must Test,Functional,,,,"User Registration ",Yes,Yes,Yes,No,No,Yes,No,No,No,No,"RESULT 1: 1.Website should load.
+
+2. user should be able to see registration form.
+
+3. filed should accept data
+
+4. filed should accept data
+
+5. filed should accept data
+
+6. user account succesfully created and should get confirmation message .
+
+7.user should be redirected to login page.","STEP 1: 1.Go to the Url.
+
+2.Click on register button
+
+3.Enter data in email field
+
+4.Enter data in Name filed
+
+5.Enter data in password field.
+
+6.Click on register button
+
+7. verify
+
+e.o.t","URL: https://bookstore.com
+
+Email: test@gmail.com
+
+Name: Sumreen Ajmal
+
+Password: 12345","1. User shouldhave correct url access.
+
+2.User should have valid email and phone number",Sumreen Ajmal,01/08/2026 02:40:48,Sumreen Ajmal,01/08/2026 03:17:59,"Verify that on entering valid data in user registration form and clicking the register button, user should be able to register successfully.",,,
+617988,Verify that registration form dont accept duplicate email.,10m,P1 - Must Test,Functional,,,,"User Registration ",Yes,Yes,Yes,No,No,Yes,No,No,No,No,"RESULT 1: 1. User should be able to see website.
+
+2. user should able to see registration form.
+
+3. field should accept data.
+
+4. field should accept data.
+
+5. field should accept data.
+
+6.User should see error message that this Email already used.","STEP 1: 1. Go to url
+
+2.Click on registerbutton.
+
+3.enter the duplicate email in email field
+
+4.Enter name in name filed
+
+5.Enter password in passowrd filed.
+
+6.Click on register button","url: https://bookstore.com
+
+email: test@gmial.com
+
+name: Sumreen Ajmal
+
+password:123@-//22","1.User should have correct url access.
+
+2. User should have validemail.
+
+3.User have already created account using that email.",Sumreen Ajmal,01/08/2026 03:12:43,Sumreen Ajmal,01/08/2026 03:12:43,The registration form should not accept duplicate email in email field.,,,
+617989,Verify that error message shown in entering invalid input.,10m,P1 - Must Test,Functional,,,,"User Registration ",Yes,Yes,Yes,No,No,Yes,No,No,No,No,"RESULT 1: 1.User should able to see website.
+
+2. filed should not accept it and show error message that email is invalid.","STEP 1: 1. Go to url
+
+2.Enter invalid email","url: https://bookstore.com
+
+
+
+email: test4455l.com",1.User have access to correct url,Sumreen Ajmal,01/08/2026 03:24:25,Sumreen Ajmal,01/08/2026 03:24:25,The Error message shown in entering invalid input in email field.,,,
+617990,Verify that on entering valid data user get login to website and see homepage,10m,P1 - Must Test,Functional,,,,User Login,Yes,Yes,Yes,No,No,Yes,No,No,No,No,"RESULT 1: 1. User should able to see website loading.
+
+2. login form should be opened.
+
+3.Field should acept the data
+
+4.Field should acept the data
+
+5.User should able to succesfully login and redirected to homepage.","STEP 1: 1.Go to URL.
+
+2.Click on login.
+
+3. Enter the valid email
+
+4. Enter valid password
+
+5.Click on Login button
+
+e.o.t","url: https://bookstore.com
+
+email: test@gmial.com
+
+name: Sumreen Ajmal
+
+password:123@-//22","1. User should have access to correct url.
+
+2. User have already created account.",Sumreen Ajmal,01/08/2026 03:32:03,Sumreen Ajmal,01/08/2026 03:54:44,When user entering valid data user get login to website and see homepage.,,,
+617991,Verify that  error message shown on entering invalid input.,10m,P1 - Must Test,Functional,,,,User Login,Yes,Yes,Yes,No,No,Yes,No,No,No,No,"RESULT 1: 1.User able to see the webiste loading.
+
+2. User should able to see login page.
+
+3. Filed should not accept it and show error message that the input data is invalid.","STEP 1: 1. Go to url
+
+2. Click on login
+
+3, Enter invalid email and password.","url: https://bookstore.com
+
+email: test.com
+
+password:1234444","1.User have accessto correct url.
+
+2. User have already created account.",Sumreen Ajmal,01/08/2026 03:56:39,Sumreen Ajmal,01/08/2026 04:00:18,error message shown on entering invalid email or invalid passowrd.,,,
+617992,"Verify that book can be searched by title, year ,author .",20m,P1 - Must Test,Functional,,,,Search book,Yes,Yes,Yes,No,No,No,No,No,No,No,"RESULT 1: 1. User should able to see webiste.
+
+2. User should able to see the homepage.
+
+3. User should able to see the book.
+
+4. User should able to openthe book
+
+5. User should able to see the author books.
+
+6. User should able to openthe book.
+
+7. User should able to see the books in that year.
+
+8. User should able to openthe book","STEP 1: 1. Go to url
+
+2. Go to Home page
+
+3. Search book by title.
+
+4. Click on open book
+
+5. Search book by author.
+
+6. Click on open book
+
+7. Search book by year.
+
+8. Click on open book
+
+e.o.t","url: https://bookstore.com
+
+book name: Toy story
+
+year:2005
+
+Author : XYZ","1.User have access to correct url.
+
+2. User have already logged in.",Sumreen Ajmal,01/08/2026 04:08:45,Sumreen Ajmal,01/08/2026 04:18:42,"When user want to search book so it can be searched by title, year ,author .",,,
