@@ -1,0 +1,557 @@
+{
+  "info": {
+    "_postman_id": "b1675148-e0b0-4c4a-83bb-0008d01f813d",
+    "name": "API Testing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "47107394",
+    "_collection_link": "https://go.postman.co/collection/47107394-b1675148-e0b0-4c4a-83bb-0008d01f813d?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Get List",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Parse the JSON response (array of objects)",
+              "var jsonData = pm.response.json();",
+              "",
+              "// Loop through each item in the array",
+              "jsonData.forEach(function(item, index) {",
+              "    console.log(\"----- Product \" + (index + 1) + \" -----\");",
+              "    console.log(\"ID: \" + item.id);",
+              "    console.log(\"Name: \" + item.name);",
+              "    ",
+              "    // Check if 'data' exists",
+              "    if(item.data) {",
+              "        // Loop through each key in 'data' object",
+              "        for (var key in item.data) {",
+              "            if (item.data.hasOwnProperty(key)) {",
+              "                console.log(key + \": \" + item.data[key]);",
+              "            }",
+              "        }",
+              "    } else {",
+              "        console.log(\"Data: null\");",
+              "    }",
+              "});",
+              "",
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.expect(pm.response.code).to.eql(200);",
+              "});",
+              "",
+              "// Response is an array",
+              "pm.test(\"Response is an array\", function () {",
+              "    pm.expect(jsonData).to.be.an(\"array\");",
+              "});",
+              "",
+              "// Response array is not empty",
+              "pm.test(\"Response array is not empty\", function () {",
+              "    pm.expect(jsonData.length).to.be.above(0);",
+              "});",
+              "",
+              "// First object has id and name",
+              "pm.test(\"Each object has id and name\", function () {",
+              "    jsonData.forEach(function(item) {",
+              "        pm.expect(item).to.have.property(\"id\");",
+              "        pm.expect(item).to.have.property(\"name\");",
+              "    });",
+              "});",
+              "",
+              "// Data field is either object or null",
+              "pm.test(\"Data field is object or null\", function () {",
+              "    jsonData.forEach(function(item) {",
+              "        pm.expect(item).to.have.property(\"data\");",
+              "        pm.expect(item.data === null || typeof item.data === \"object\").to.be.true;",
+              "    });",
+              "});",
+              "",
+              "// At least one product contains price",
+              "pm.test(\"At least one product has price\", function () {",
+              "    var hasPrice = jsonData.some(item => item.data && item.data.price);",
+              "    pm.expect(hasPrice).to.be.true;",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/objects",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "objects"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Object",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// Random product name",
+              "pm.variables.set(\"randomProduct\", \"Laptop \" + Math.floor(Math.random() * 1000));",
+              "",
+              "// Random year between 2015 and 2023",
+              "pm.variables.set(\"randomYear\", Math.floor(Math.random() * (2023 - 2015 + 1)) + 2015);",
+              "",
+              "// Random price between 1000 and 3000",
+              "pm.variables.set(\"randomPrice\", (Math.random() * (3000 - 1000) + 1000).toFixed(2));",
+              "",
+              "// Random CPU model",
+              "const cpus = [\"Intel Core i5\", \"Intel Core i7\", \"Intel Core i9\", \"AMD Ryzen 7\"];",
+              "pm.variables.set(\"randomCPU\", cpus[Math.floor(Math.random() * cpus.length)]);",
+              "",
+              "// Random hard disk size",
+              "const disks = [\"256 GB\", \"512 GB\", \"1 TB\", \"2 TB\"];",
+              "pm.variables.set(\"randomDisk\", disks[Math.floor(Math.random() * disks.length)]);",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Parse the JSON response",
+              "var jsonData = pm.response.json();",
+              "",
+              "// Log values to Postman console",
+              "console.log(\"Product Name: \" + jsonData.name);",
+              "console.log(\"Year: \" + jsonData.data.year);",
+              "console.log(\"Price: \" + jsonData.data.price);",
+              "console.log(\"CPU Model: \" + jsonData.data[\"CPU model\"]);",
+              "console.log(\"Hard Disk: \" + jsonData.data[\"Hard disk size\"]);",
+              "",
+              "// Save the generated ID as a Postman variable",
+              "pm.collectionVariables.set(\"createdProductId\", jsonData.id);",
+              "",
+              "// Optional: log it to console",
+              "console.log(\"Created Product ID: \" + jsonData.id);",
+              "",
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.expect(pm.response.code).to.eql(200);",
+              "});",
+              "",
+              "// Response is JSON",
+              "pm.test(\"Response is JSON\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+              "});",
+              "",
+              "// ID is present",
+              "pm.test(\"ID is generated\", function () {",
+              "    pm.expect(jsonData.id).to.exist;",
+              "});",
+              "",
+              "// Name is present and is string",
+              "pm.test(\"Product name is a string\", function () {",
+              "    pm.expect(jsonData.name).to.be.a(\"string\");",
+              "});",
+              "",
+              "// createdAt is present",
+              "pm.test(\"createdAt timestamp is present\", function () {",
+              "    pm.expect(jsonData.createdAt).to.exist;",
+              "});",
+              "",
+              "// Data object exists",
+              "pm.test(\"Data object exists\", function () {",
+              "    pm.expect(jsonData.data).to.be.an(\"object\");",
+              "});",
+              "",
+              "// Year is a number",
+              "pm.test(\"Year is a number\", function () {",
+              "    pm.expect(jsonData.data.year).to.be.a(\"number\");",
+              "});",
+              "",
+              "// Price is a number",
+              "pm.test(\"Price is a number\", function () {",
+              "    pm.expect(jsonData.data.price).to.be.a(\"number\");",
+              "});",
+              "",
+              "// CPU model exists",
+              "pm.test(\"CPU model exists\", function () {",
+              "    pm.expect(jsonData.data[\"CPU model\"]).to.exist;",
+              "});",
+              "",
+              "// Hard disk size exists",
+              "pm.test(\"Hard disk size exists\", function () {",
+              "    pm.expect(jsonData.data[\"Hard disk size\"]).to.exist;",
+              "});",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"{{randomProduct}}\",\n  \"data\": {\n    \"year\": {{randomYear}},\n    \"price\": {{randomPrice}},\n    \"CPU model\": \"{{randomCPU}}\",\n    \"Hard disk size\": \"{{randomDisk}}\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/objects",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "objects"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Put request",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Parse the JSON response",
+              "var jsonData = pm.response.json();",
+              "",
+              "// Log values to Postman console",
+              "console.log(\"Product Name: \" + jsonData.name);",
+              "console.log(\"Year: \" + jsonData.data.year);",
+              "console.log(\"Price: \" + jsonData.data.price);",
+              "console.log(\"CPU Model: \" + jsonData.data[\"CPU model\"]);",
+              "console.log(\"Hard Disk: \" + jsonData.data[\"Hard disk size\"]);",
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.expect(pm.response.code).to.eql(200);",
+              "});",
+              "",
+              "// Response is JSON",
+              "pm.test(\"Response is JSON\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+              "});",
+              "",
+              "// ID exists and is not empty",
+              "pm.test(\"ID exists\", function () {",
+              "    pm.expect(jsonData.id).to.exist;",
+              "});",
+              "",
+              "// Name is present and is string",
+              "pm.test(\"Product name is updated\", function () {",
+              "    pm.expect(jsonData.name).to.be.a(\"string\");",
+              "});",
+              "",
+              "// Data object exists",
+              "pm.test(\"Data object exists\", function () {",
+              "    pm.expect(jsonData.data).to.be.an(\"object\");",
+              "});",
+              "",
+              "// Year is a number",
+              "pm.test(\"Year is a number\", function () {",
+              "    pm.expect(jsonData.data.year).to.be.a(\"number\");",
+              "});",
+              "",
+              "// Price is a number",
+              "pm.test(\"Price is a number\", function () {",
+              "    pm.expect(jsonData.data.price).to.be.a(\"number\");",
+              "});",
+              "",
+              "// CPU model exists",
+              "pm.test(\"CPU model exists\", function () {",
+              "    pm.expect(jsonData.data[\"CPU model\"]).to.exist;",
+              "});",
+              "",
+              "// Hard disk size exists",
+              "pm.test(\"Hard disk size exists\", function () {",
+              "    pm.expect(jsonData.data[\"Hard disk size\"]).to.exist;",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// Random product name",
+              "pm.variables.set(\"randomProduct\", \"Laptop \" + Math.floor(Math.random() * 1000));",
+              "",
+              "// Random year between 2015 and 2023",
+              "pm.variables.set(\"randomYear\", Math.floor(Math.random() * (2023 - 2015 + 1)) + 2015);",
+              "",
+              "// Random price between 1000 and 3000",
+              "pm.variables.set(\"randomPrice\", (Math.random() * (3000 - 1000) + 1000).toFixed(2));",
+              "",
+              "// Random CPU model",
+              "const cpus = [\"Intel Core i5\", \"Intel Core i7\", \"Intel Core i9\", \"AMD Ryzen 7\"];",
+              "pm.variables.set(\"randomCPU\", cpus[Math.floor(Math.random() * cpus.length)]);",
+              "",
+              "// Random hard disk size",
+              "const disks = [\"256 GB\", \"512 GB\", \"1 TB\", \"2 TB\"];",
+              "pm.variables.set(\"randomDisk\", disks[Math.floor(Math.random() * disks.length)]);",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"{{randomProduct}}\",\n  \"data\": {\n    \"year\": {{randomYear}},\n    \"price\": {{randomPrice}},\n    \"CPU model\": \"{{randomCPU}}\",\n    \"Hard disk size\": \"{{randomDisk}}\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/objects/{{createdProductId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "objects",
+            "{{createdProductId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "patch request",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Parse the JSON response",
+              "var jsonData = pm.response.json();",
+              "",
+              "// Log top-level values",
+              "console.log(\"Product ID: \" + jsonData.id);",
+              "console.log(\"Product Name: \" + jsonData.name);",
+              "console.log(\"Updated At: \" + jsonData.updatedAt);",
+              "",
+              "// Log nested data object",
+              "console.log(\"Year: \" + jsonData.data.year);",
+              "console.log(\"Price: \" + jsonData.data.price);",
+              "console.log(\"CPU Model: \" + jsonData.data[\"CPU model\"]);",
+              "console.log(\"Hard Disk Size: \" + jsonData.data[\"Hard disk size\"]);",
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.expect(pm.response.code).to.eql(200);",
+              "});",
+              "",
+              "// Response is JSON",
+              "pm.test(\"Response is JSON\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+              "});",
+              "",
+              "// ID exists and is not empty",
+              "pm.test(\"ID exists\", function () {",
+              "    pm.expect(jsonData.id).to.exist;",
+              "});",
+              "",
+              "// Name is present and is string",
+              "pm.test(\"Product name is updated\", function () {",
+              "    pm.expect(jsonData.name).to.be.a(\"string\");",
+              "});",
+              "",
+              "// Data object exists",
+              "pm.test(\"Data object exists\", function () {",
+              "    pm.expect(jsonData.data).to.be.an(\"object\");",
+              "});",
+              "",
+              "// Year is a number",
+              "pm.test(\"Year is a number\", function () {",
+              "    pm.expect(jsonData.data.year).to.be.a(\"number\");",
+              "});",
+              "",
+              "// Price is a number",
+              "pm.test(\"Price is a number\", function () {",
+              "    pm.expect(jsonData.data.price).to.be.a(\"number\");",
+              "});",
+              "",
+              "// CPU model exists",
+              "pm.test(\"CPU model exists\", function () {",
+              "    pm.expect(jsonData.data[\"CPU model\"]).to.exist;",
+              "});",
+              "",
+              "// Hard disk size exists",
+              "pm.test(\"Hard disk size exists\", function () {",
+              "    pm.expect(jsonData.data[\"Hard disk size\"]).to.exist;",
+              "});",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "var randomNum = Math.floor(Math.random() * 1000);",
+              "",
+              "// Set the random updated product name as a variable",
+              "pm.variables.set(\"updatedProductName\", \"Apple MacBook Pro 16 (Updated \" + randomNum + \")\");",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"{{updatedProductName}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/objects/{{createdProductId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "objects",
+            "{{createdProductId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "delete request",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();",
+              "console.log(\"Delete Response: \" + JSON.stringify(jsonData));",
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.expect(pm.response.code).to.eql(200);",
+              "});",
+              "",
+              "// Response is JSON",
+              "pm.test(\"Response is JSON\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+              "});",
+              "",
+              "// Message exists",
+              "pm.test(\"Delete confirmation message exists\", function () {",
+              "    pm.expect(jsonData.message).to.exist;",
+              "});",
+              "",
+              "// Message contains 'has been deleted'",
+              "pm.test(\"Correct delete message\", function () {",
+              "    pm.expect(jsonData.message).to.include(\"has been deleted\");",
+              "});",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/objects/{{createdProductId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "objects",
+            "{{createdProductId}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": ""
+    },
+    {
+      "key": "createdProductId",
+      "value": ""
+    }
+  ]
+}
